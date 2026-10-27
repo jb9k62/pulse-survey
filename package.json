@@ -1,0 +1,45 @@
+{
+  "name": "pulse-surveys",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Multi-tenant weekly pulse surveys: NestJS + PostgreSQL backend with a small React front end.",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "postinstall": "npm run build -w @pulse/contracts",
+    "dev:api": "npm run start:dev -w apps/api",
+    "dev:web": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/api && npm run build -w apps/web",
+    "test": "npm run db:up && npm run db:bootstrap && npm run test -w apps/api && npm run test -w apps/web && npm run test -w @pulse/okf-widgets",
+    "test:e2e": "npm run db:up && npm run db:bootstrap && npm run test:e2e -w apps/api",
+    "lint": "npm run lint -w apps/api && npm run lint -w apps/web && npm run lint -w @pulse/okf-widgets",
+    "typecheck": "npm run typecheck -w @pulse/contracts && npm run typecheck -w apps/api && npm run typecheck -w apps/web && npm run typecheck -w @pulse/okf-widgets",
+    "okf:validate": "node scripts/okf-view.mjs okf --validate",
+    "okf:view": "npm run build -w @pulse/okf-widgets && node scripts/okf-view.mjs okf",
+    "okf:mermaid": "node scripts/okf-mermaid.mjs okf",
+    "okf:mermaid:render": "npm run build -w @pulse/okf-widgets && node scripts/okf-view.mjs okf --check-render",
+    "okf:render:fixture": "npm run build -w @pulse/okf-widgets && node scripts/okf-view.mjs scripts/fixtures/okf-render-errors --out node_modules/.cache/okf-render-fixture.html --check-render",
+    "react:index": "node scripts/react-docs-index.mjs",
+    "db:up": "docker compose up -d --wait db",
+    "db:down": "docker compose down",
+    "db:bootstrap": "docker compose exec -T db sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -v ON_ERROR_STOP=1 -v db_name=\"$POSTGRES_DB\" -v owner_password=\"$POSTGRES_PASSWORD\" -v app_password=\"$POSTGRES_PASSWORD\"' < apps/api/db/bootstrap.sql",
+    "db:generate": "npm run db:generate -w apps/api",
+    "db:migrate": "npm run db:migrate -w apps/api",
+    "db:seed": "NODE_ENV=development npm run db:seed -w apps/api",
+    "db:reset": "docker compose down -v && npm run db:up && npm run db:bootstrap && npm run db:migrate && npm run db:seed",
+    "db:psql": "docker compose exec db sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"'",
+    "test:e2e:web": "AUTH_MODE=dev npm run db:reset && playwright test --config apps/web/e2e/playwright.config.ts; status=$?; npm run db:seed; exit $status",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "yaml": "^2.4.0"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.17.0",
+    "playwright": "^1.63.0"
+  }
+}

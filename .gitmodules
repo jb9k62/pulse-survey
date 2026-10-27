@@ -1,0 +1,16 @@
+[submodule "references/nest"]
+	path = references/nest
+	url = https://github.com/nestjs/nest.git
+	shallow = true
+[submodule "references/drizzle-orm"]
+	path = references/drizzle-orm
+	url = https://github.com/drizzle-team/drizzle-orm.git
+	shallow = true
+[submodule "references/react"]
+	path = references/react
+	url = https://github.com/facebook/react.git
+	shallow = true
+[submodule "references/react.dev"]
+	path = references/react.dev
+	url = https://github.com/reactjs/react.dev.git
+	shallow = true

@@ -1,0 +1,807 @@
+{
+  "id": "ec81e846-d15f-4418-9d40-68c69617c88e",
+  "prevId": "76403cdd-cb85-451d-b330-ddeeb9e39888",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.answers": {
+      "name": "answers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "survey_id": {
+          "name": "survey_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "response_id": {
+          "name": "response_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "question_id": {
+          "name": "question_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rating_value": {
+          "name": "rating_value",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "yes_no_value": {
+          "name": "yes_no_value",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "answers_response_idx": {
+          "name": "answers_response_idx",
+          "columns": [
+            {
+              "expression": "response_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "answers_survey_id_question_id_questions_survey_id_id_fk": {
+          "name": "answers_survey_id_question_id_questions_survey_id_id_fk",
+          "tableFrom": "answers",
+          "columnsFrom": [
+            "survey_id",
+            "question_id"
+          ],
+          "tableTo": "questions",
+          "columnsTo": [
+            "survey_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "answers_survey_id_response_id_responses_survey_id_id_fk": {
+          "name": "answers_survey_id_response_id_responses_survey_id_id_fk",
+          "tableFrom": "answers",
+          "columnsFrom": [
+            "survey_id",
+            "response_id"
+          ],
+          "tableTo": "responses",
+          "columnsTo": [
+            "survey_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "answers_response_id_question_id_unique": {
+          "name": "answers_response_id_question_id_unique",
+          "columns": [
+            "response_id",
+            "question_id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "answers_org_isolation": {
+          "name": "answers_org_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "EXISTS (SELECT 1 FROM responses r WHERE r.id = \"answers\".\"response_id\" AND r.organisation_id = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR r.user_id = nullif(current_setting('app.current_user', true), '')::uuid))",
+          "withCheck": "EXISTS (SELECT 1 FROM responses r WHERE r.id = \"answers\".\"response_id\" AND r.organisation_id = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR r.user_id = nullif(current_setting('app.current_user', true), '')::uuid))"
+        }
+      },
+      "checkConstraints": {
+        "answers_one_value_check": {
+          "name": "answers_one_value_check",
+          "value": "num_nonnulls(\"answers\".\"rating_value\", \"answers\".\"yes_no_value\") = 1"
+        },
+        "answers_rating_value_check": {
+          "name": "answers_rating_value_check",
+          "value": "\"answers\".\"rating_value\" IS NULL OR \"answers\".\"rating_value\" BETWEEN 1 AND 5"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.organisations": {
+      "name": "organisations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "organisations_name_unique": {
+          "name": "organisations_name_unique",
+          "columns": [
+            "name"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "organisations_select_own": {
+          "name": "organisations_select_own",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"organisations\".\"id\" = nullif(current_setting('app.current_org', true), '')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.questions": {
+      "name": "questions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "survey_id": {
+          "name": "survey_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt": {
+          "name": "prompt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "questions_organisation_id_survey_id_surveys_organisation_id_id_fk": {
+          "name": "questions_organisation_id_survey_id_surveys_organisation_id_id_fk",
+          "tableFrom": "questions",
+          "columnsFrom": [
+            "organisation_id",
+            "survey_id"
+          ],
+          "tableTo": "surveys",
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "questions_survey_id_id_unique": {
+          "name": "questions_survey_id_id_unique",
+          "columns": [
+            "survey_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        },
+        "questions_survey_id_position_unique": {
+          "name": "questions_survey_id_position_unique",
+          "columns": [
+            "survey_id",
+            "position"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "questions_org_isolation": {
+          "name": "questions_org_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"questions\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid",
+          "withCheck": "\"questions\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid"
+        }
+      },
+      "checkConstraints": {
+        "questions_position_check": {
+          "name": "questions_position_check",
+          "value": "\"questions\".\"position\" BETWEEN 1 AND 3"
+        },
+        "questions_type_check": {
+          "name": "questions_type_check",
+          "value": "\"questions\".\"type\" IN ('rating', 'yes_no')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.responses": {
+      "name": "responses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "survey_id": {
+          "name": "survey_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "week_start": {
+          "name": "week_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "responses_org_week_idx": {
+          "name": "responses_org_week_idx",
+          "columns": [
+            {
+              "expression": "organisation_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "week_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "responses_survey_week_idx": {
+          "name": "responses_survey_week_idx",
+          "columns": [
+            {
+              "expression": "survey_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "week_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "responses_organisation_id_survey_id_surveys_organisation_id_id_fk": {
+          "name": "responses_organisation_id_survey_id_surveys_organisation_id_id_fk",
+          "tableFrom": "responses",
+          "columnsFrom": [
+            "organisation_id",
+            "survey_id"
+          ],
+          "tableTo": "surveys",
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "responses_organisation_id_user_id_users_organisation_id_id_fk": {
+          "name": "responses_organisation_id_user_id_users_organisation_id_id_fk",
+          "tableFrom": "responses",
+          "columnsFrom": [
+            "organisation_id",
+            "user_id"
+          ],
+          "tableTo": "users",
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "responses_survey_id_id_unique": {
+          "name": "responses_survey_id_id_unique",
+          "columns": [
+            "survey_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        },
+        "responses_survey_id_user_id_week_start_unique": {
+          "name": "responses_survey_id_user_id_week_start_unique",
+          "columns": [
+            "survey_id",
+            "user_id",
+            "week_start"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "responses_org_isolation": {
+          "name": "responses_org_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"responses\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR \"responses\".\"user_id\" = nullif(current_setting('app.current_user', true), '')::uuid)",
+          "withCheck": "\"responses\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR \"responses\".\"user_id\" = nullif(current_setting('app.current_user', true), '')::uuid)"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.sessions": {
+      "name": "sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "sessions_token_hash_key": {
+          "name": "sessions_token_hash_key",
+          "columns": [
+            {
+              "expression": "token_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "sessions_user_idx": {
+          "name": "sessions_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "sessions_expires_idx": {
+          "name": "sessions_expires_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "sessions_user_id_users_id_fk": {
+          "name": "sessions_user_id_users_id_fk",
+          "tableFrom": "sessions",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "users",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "sessions_select_own_token": {
+          "name": "sessions_select_own_token",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"sessions\".\"token_hash\" = current_setting('app.current_session_token', true)"
+        },
+        "sessions_delete_own_token": {
+          "name": "sessions_delete_own_token",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"sessions\".\"token_hash\" = current_setting('app.current_session_token', true)"
+        }
+      },
+      "checkConstraints": {
+        "sessions_expires_at_check": {
+          "name": "sessions_expires_at_check",
+          "value": "\"sessions\".\"expires_at\" > \"sessions\".\"created_at\""
+        },
+        "sessions_token_hash_check": {
+          "name": "sessions_token_hash_check",
+          "value": "\"sessions\".\"token_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.surveys": {
+      "name": "surveys",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "surveys_one_active_per_org": {
+          "name": "surveys_one_active_per_org",
+          "columns": [
+            {
+              "expression": "organisation_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"surveys\".\"status\" = 'active'",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "surveys_organisation_id_organisations_id_fk": {
+          "name": "surveys_organisation_id_organisations_id_fk",
+          "tableFrom": "surveys",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "tableTo": "organisations",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "surveys_organisation_id_id_unique": {
+          "name": "surveys_organisation_id_id_unique",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "surveys_org_isolation": {
+          "name": "surveys_org_isolation",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"surveys\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid",
+          "withCheck": "\"surveys\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid"
+        }
+      },
+      "checkConstraints": {
+        "surveys_status_check": {
+          "name": "surveys_status_check",
+          "value": "\"surveys\".\"status\" IN ('active', 'archived')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deactivated_at": {
+          "name": "deactivated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "users_organisation_idx": {
+          "name": "users_organisation_idx",
+          "columns": [
+            {
+              "expression": "organisation_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "users_organisation_id_organisations_id_fk": {
+          "name": "users_organisation_id_organisations_id_fk",
+          "tableFrom": "users",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "tableTo": "organisations",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_organisation_id_id_unique": {
+          "name": "users_organisation_id_id_unique",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "users_select_self_or_org": {
+          "name": "users_select_self_or_org",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "pulse_app"
+          ],
+          "using": "\"users\".\"organisation_id\" = nullif(current_setting('app.current_org', true), '')::uuid OR \"users\".\"id\" = nullif(current_setting('app.current_user', true), '')::uuid"
+        }
+      },
+      "checkConstraints": {
+        "users_role_check": {
+          "name": "users_role_check",
+          "value": "\"users\".\"role\" IN ('manager', 'member')"
+        },
+        "users_deactivated_at_check": {
+          "name": "users_deactivated_at_check",
+          "value": "\"users\".\"deactivated_at\" IS NULL OR \"users\".\"deactivated_at\" >= \"users\".\"joined_at\""
+        },
+        "users_joined_at_check": {
+          "name": "users_joined_at_check",
+          "value": "\"users\".\"joined_at\" <= \"users\".\"created_at\""
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

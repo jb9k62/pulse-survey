@@ -1,0 +1,515 @@
+/**
+ * The single application stylesheet: a small reset, the page layout, and one
+ * class per block. No framework, no CSS modules, no CSS-in-JS. The look is
+ * retro: a pixel display font, square corners, thick borders and hard offset
+ * shadows.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--colour-canvas);
+  color: var(--colour-text);
+  font-family: var(--font-body);
+  font-size: var(--font-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--font-xl);
+}
+
+h2 {
+  font-size: var(--font-lg);
+}
+
+h3 {
+  font-family: var(--font-body);
+  font-size: var(--font-base);
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+}
+
+/* Top bar */
+
+.topbar {
+  background: var(--colour-surface);
+  border-bottom: var(--border-width) solid var(--colour-border);
+}
+
+.topbar-inner {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: var(--space-2) var(--space-3);
+}
+
+.brand {
+  color: var(--colour-accent);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.topbar-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.account {
+  align-items: center;
+  display: flex;
+  gap: var(--space-2);
+  margin-right: var(--space-2);
+  font-size: var(--font-sm);
+}
+
+/* Page and blocks */
+
+.page {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: var(--space-4) var(--space-3) var(--space-5);
+}
+
+.page-narrow {
+  margin-inline: auto;
+  max-width: 44rem;
+}
+
+.card {
+  background: var(--colour-surface);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--colour-shadow);
+  padding: var(--space-4);
+}
+
+.card-header {
+  border-bottom: var(--border-width) dashed var(--colour-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+}
+
+.eyebrow {
+  color: var(--colour-muted);
+  font-size: var(--font-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Buttons */
+
+.button {
+  align-items: center;
+  background: var(--colour-accent);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 3px 3px 0 var(--colour-shadow);
+  color: var(--colour-on-accent);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 600;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  transition:
+    transform 80ms ease,
+    box-shadow 80ms ease;
+}
+
+.button:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--colour-shadow);
+}
+
+.button:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--colour-shadow);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.button-ghost {
+  background: var(--colour-surface);
+  color: var(--colour-text);
+  font-size: var(--font-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.button-wide {
+  justify-content: center;
+  width: 100%;
+}
+
+/* A full-width row inside a list: the user picker and the survey list. */
+.list-button {
+  align-items: center;
+  background: var(--colour-surface);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  color: var(--colour-text);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: var(--space-2);
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  width: 100%;
+}
+
+.list-button:hover:not(:disabled):not([aria-pressed='true']) {
+  background: var(--colour-accent-soft);
+}
+
+.list-button[aria-pressed='true'] {
+  background: var(--colour-accent);
+  color: var(--colour-on-accent);
+  box-shadow: 3px 3px 0 var(--colour-shadow);
+}
+
+.list-button[aria-pressed='true'] .badge {
+  border-color: currentColor;
+  color: inherit;
+}
+
+.list-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.badge {
+  border: 1px solid var(--colour-muted);
+  border-radius: var(--radius-sm);
+  color: var(--colour-muted);
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0 var(--space-1);
+  text-transform: uppercase;
+}
+
+/* Sign-in */
+
+.user-groups {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.user-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.user-group h2 {
+  border-bottom: var(--border-width) solid var(--colour-border);
+  padding-bottom: var(--space-1);
+}
+
+/* Manager: survey list beside the summary */
+
+.manager {
+  align-items: start;
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(16rem, 20rem) 1fr;
+}
+
+.picker {
+  margin-top: var(--space-3);
+}
+
+.detail-empty {
+  align-items: center;
+  color: var(--colour-muted);
+  display: flex;
+  justify-content: center;
+  min-height: 12rem;
+  text-align: center;
+}
+
+.week {
+  background: var(--colour-sunken);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  align-self: flex-start;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  padding: 0 var(--space-2);
+}
+
+/* Summary */
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.stat {
+  align-items: baseline;
+  background: var(--colour-sunken);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-3);
+}
+
+.stat-value {
+  color: var(--colour-accent);
+  font-family: var(--font-display);
+  font-size: var(--font-stat);
+  line-height: 1;
+}
+
+.question-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.question-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/*
+ * A horizontal bar split into flex segments. The segments use `flex-grow`
+ * with the raw server numbers, so the browser sizes them and the client does
+ * no division. Decorative only: the text beside it carries the value.
+ */
+.bar {
+  background: var(--colour-track);
+  border: var(--border-width) solid var(--colour-border);
+  display: flex;
+  height: 1rem;
+}
+
+.bar-fill {
+  background: var(--colour-accent);
+}
+
+.bar-rest {
+  background: transparent;
+}
+
+.bar-no {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--colour-muted) 0 2px,
+    transparent 2px 6px
+  );
+}
+
+/* Member form */
+
+.question {
+  background: var(--colour-sunken);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  margin: 0;
+  padding: var(--space-3);
+}
+
+/*
+ * A floated legend leaves the fieldset border and lays out like an ordinary
+ * block inside the box. `.choices` clears the float below it.
+ */
+.question legend {
+  float: left;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  padding: 0;
+  width: 100%;
+}
+
+.question-number {
+  color: var(--colour-accent);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin-right: var(--space-2);
+}
+
+.choices {
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.scale-hint {
+  margin: var(--space-2) 0 0;
+}
+
+/*
+ * A radio drawn as a key. The real input covers the whole label with zero
+ * opacity, so it stays focusable, clickable and announced as a radio.
+ */
+.choice {
+  position: relative;
+}
+
+.choice input {
+  cursor: pointer;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.choice span {
+  background: var(--colour-surface);
+  border: var(--border-width) solid var(--colour-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 3px 3px 0 var(--colour-shadow);
+  display: inline-block;
+  font-weight: 600;
+  min-width: 3rem;
+  padding: var(--space-2) var(--space-3);
+  text-align: center;
+  transition:
+    transform 80ms ease,
+    box-shadow 80ms ease;
+}
+
+.choice:hover span {
+  background: var(--colour-accent-soft);
+}
+
+.choice input:checked + span {
+  background: var(--colour-accent);
+  box-shadow: 0 0 0 var(--colour-shadow);
+  color: var(--colour-on-accent);
+  transform: translate(3px, 3px);
+}
+
+.choice input:focus-visible + span {
+  outline: 2px solid var(--colour-focus);
+  outline-offset: 3px;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Messages */
+
+.muted {
+  color: var(--colour-muted);
+  font-size: var(--font-sm);
+}
+
+.error,
+.notice,
+.success {
+  border: var(--border-width) solid currentColor;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-3);
+}
+
+.error {
+  color: var(--colour-danger);
+}
+
+.notice {
+  color: var(--colour-muted);
+  border-style: dashed;
+}
+
+.success {
+  color: var(--colour-success);
+}
+
+.messages:not(:empty) {
+  margin-top: var(--space-3);
+}
+
+.card-header + .notice {
+  margin-bottom: var(--space-3);
+}
+
+.button:focus-visible,
+.list-button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--colour-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 44rem) {
+  .manager {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: var(--space-3);
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .choice span {
+    transition: none;
+  }
+}

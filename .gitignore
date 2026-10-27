@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Playwright run artefacts (screenshots carry the week label, so they change every week)
+apps/web/e2e/test-results/
+apps/web/e2e/screenshots/
+
+# Generated OKF viewer (rebuild with `npm run okf:view`)
+okf/viz.html
+
+# Editor and OS noise
+.DS_Store
+*.log

@@ -1,0 +1,91 @@
+/**
+ * Design tokens for the single hand-written stylesheet layer. The light theme
+ * is the default; `html[data-theme='dark']` (set by the inline script in
+ * index.html and by ThemeToggle) overrides the colour tokens only. The media
+ * query covers the case where that script did not run.
+ */
+
+:root {
+  color-scheme: light;
+
+  --colour-canvas: #efe8d8;
+  --colour-surface: #fbf7ee;
+  --colour-sunken: #e6dcc7;
+  --colour-text: #1f1b16;
+  --colour-muted: #5e554a;
+  --colour-border: #1f1b16;
+  --colour-shadow: #1f1b16;
+  --colour-accent: #c2410c;
+  --colour-on-accent: #fffaf0;
+  --colour-accent-soft: #f6d9c7;
+  --colour-track: #d9ceb6;
+  --colour-success: #2d6a2f;
+  --colour-danger: #b3261e;
+  --colour-focus: #1d4ed8;
+
+  --font-body:
+    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-display: 'VT323', 'IBM Plex Mono', ui-monospace, monospace;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+
+  --radius-sm: 2px;
+
+  --font-sm: 0.8125rem;
+  --font-base: 0.9375rem;
+  --font-lg: 2rem;
+  --font-xl: 2.5rem;
+  --font-stat: 3.5rem;
+
+  --border-width: 2px;
+  --shadow-offset: 4px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --colour-canvas: #121417;
+  --colour-surface: #1b1e23;
+  --colour-sunken: #15181c;
+  --colour-text: #ebe5d6;
+  --colour-muted: #a39b8b;
+  --colour-border: #4a4f58;
+  --colour-shadow: #000000;
+  --colour-accent: #ffb000;
+  --colour-on-accent: #121417;
+  --colour-accent-soft: #3a2e12;
+  --colour-track: #2b2f36;
+  --colour-success: #7bd88f;
+  --colour-danger: #ff7a70;
+  --colour-focus: #7aa7f0;
+}
+
+/*
+ * A copy of the dark block above, for a page where the inline script did not
+ * set `data-theme`. CSS cannot share one declaration block between a selector
+ * and a media query, so edit both together.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --colour-canvas: #121417;
+    --colour-surface: #1b1e23;
+    --colour-sunken: #15181c;
+    --colour-text: #ebe5d6;
+    --colour-muted: #a39b8b;
+    --colour-border: #4a4f58;
+    --colour-shadow: #000000;
+    --colour-accent: #ffb000;
+    --colour-on-accent: #121417;
+    --colour-accent-soft: #3a2e12;
+    --colour-track: #2b2f36;
+    --colour-success: #7bd88f;
+    --colour-danger: #ff7a70;
+    --colour-focus: #7aa7f0;
+  }
+}

@@ -1,0 +1,1 @@
+ALTER POLICY "users_select_self_or_org" ON "users" TO pulse_app USING ("users"."id" = nullif(current_setting('app.current_user', true), '')::uuid OR ("users"."organisation_id" = nullif(current_setting('app.current_org', true), '')::uuid AND current_setting('app.current_role', true) = 'manager'));

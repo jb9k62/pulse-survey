@@ -1,0 +1,10 @@
+-- Split the combined responses and answers policies into a read policy and an insert
+-- policy. Reading is unchanged (a Manager reads the organisation, a Member their own rows).
+-- Inserting now needs the caller's own row whatever the role, so a Manager cannot file a
+-- response on another user's behalf. Before this, only the Member-only route stopped that.
+DROP POLICY "answers_org_isolation" ON "answers" CASCADE;--> statement-breakpoint
+DROP POLICY "responses_org_isolation" ON "responses" CASCADE;--> statement-breakpoint
+CREATE POLICY "answers_select_org" ON "answers" AS PERMISSIVE FOR SELECT TO "pulse_app" USING (EXISTS (SELECT 1 FROM responses r WHERE r.id = "answers"."response_id" AND r.organisation_id = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR r.user_id = nullif(current_setting('app.current_user', true), '')::uuid)));--> statement-breakpoint
+CREATE POLICY "answers_insert_own" ON "answers" AS PERMISSIVE FOR INSERT TO "pulse_app" WITH CHECK (EXISTS (SELECT 1 FROM responses r WHERE r.id = "answers"."response_id" AND r.organisation_id = nullif(current_setting('app.current_org', true), '')::uuid AND r.user_id = nullif(current_setting('app.current_user', true), '')::uuid));--> statement-breakpoint
+CREATE POLICY "responses_select_org" ON "responses" AS PERMISSIVE FOR SELECT TO "pulse_app" USING ("responses"."organisation_id" = nullif(current_setting('app.current_org', true), '')::uuid AND (current_setting('app.current_role', true) = 'manager' OR "responses"."user_id" = nullif(current_setting('app.current_user', true), '')::uuid));--> statement-breakpoint
+CREATE POLICY "responses_insert_own" ON "responses" AS PERMISSIVE FOR INSERT TO "pulse_app" WITH CHECK ("responses"."organisation_id" = nullif(current_setting('app.current_org', true), '')::uuid AND "responses"."user_id" = nullif(current_setting('app.current_user', true), '')::uuid);

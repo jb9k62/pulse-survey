@@ -1,0 +1,457 @@
+/* Widget styles. They read the viewer's own tokens (--surface, --border, --accent and so on),
+   so light and dark both work with no tokens of their own. Every rule is under .okfw. */
+
+.okfw {
+  --okfw-good: #16a34a;
+  --okfw-bad: #dc2626;
+  --okfw-warn-bg: color-mix(in srgb, #f59e0b 14%, transparent);
+  --okfw-good-bg: color-mix(in srgb, var(--okfw-good) 12%, transparent);
+  --okfw-bad-bg: color-mix(in srgb, var(--okfw-bad) 12%, transparent);
+  margin: 0 0 1.5em;
+  padding: 14px 16px 12px;
+  border: 1px solid var(--border-strong, #cbd5e1);
+  border-top: 3px solid var(--accent, #2563eb);
+  border-radius: 8px;
+  background: var(--surface, #fff);
+  font-size: 14px;
+}
+.okfw figcaption {
+  margin: 0 0 10px;
+  font-weight: 600;
+  color: var(--heading, #0f172a);
+}
+.okfw h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--heading, #0f172a);
+}
+.okfw section {
+  min-width: 0;
+}
+.okfw button,
+.okfw select,
+.okfw input[type='number'] {
+  font: inherit;
+  font-size: 13px;
+}
+.okfw input[type='number'] {
+  width: 5em;
+}
+.okfw code {
+  font-size: 0.9em;
+}
+
+.okfw-columns {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.okfw-row {
+  display: block;
+  margin: 8px 0;
+}
+.okfw-toggle {
+  display: block;
+  margin: 8px 0;
+}
+.okfw-reason {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+.okfw-muted {
+  color: var(--text-muted, #64748b);
+}
+.okfw-model {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted, #64748b);
+}
+.okfw-note {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--surface-2, #f1f5f9);
+}
+.okfw-warn {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--okfw-warn-bg);
+}
+.okfw-error {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--okfw-bad-bg);
+  font-family: ui-monospace, monospace;
+  font-size: 12.5px;
+}
+.okfw-raw {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--pre-bg, #f8fafc);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Tables */
+.okfw-table-wrap {
+  overflow-x: auto;
+}
+.okfw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.okfw-table th,
+.okfw-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+  text-align: left;
+  vertical-align: middle;
+}
+.okfw-table th {
+  background: none;
+}
+.okfw-table thead th {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+  font-weight: 600;
+}
+.okfw-table tbody th {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.okfw-table [data-kept='true'] td:last-child strong,
+.okfw-table [data-eligible='true'] strong {
+  color: var(--okfw-good);
+}
+.okfw-table [data-kept='false'] {
+  opacity: 0.6;
+}
+.okfw-table [data-eligible='false'] strong {
+  color: var(--okfw-bad);
+}
+
+/* Week bounder */
+.okfw-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.okfw-ruler {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 4px 8px;
+  align-items: center;
+  margin: 10px 0 4px;
+}
+.okfw-ruler-label {
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+}
+.okfw-track {
+  position: relative;
+  height: 30px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-2, #f1f5f9);
+}
+.okfw-week-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--accent, #2563eb) 22%, transparent);
+}
+.okfw-day {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 2px 3px;
+  border-left: 1px solid var(--border-strong, #cbd5e1);
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  line-height: 1.25;
+  color: var(--text-muted, #64748b);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.okfw-day[data-monday='true'] {
+  border-left: 2px solid var(--heading, #0f172a);
+  color: var(--heading, #0f172a);
+}
+.okfw-marker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--okfw-bad);
+}
+.okfw-slider {
+  width: calc(100% - 52px);
+  margin: 4px 0 0 52px;
+}
+.okfw-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 10px 0 0;
+}
+.okfw-facts dt {
+  color: var(--text-muted, #64748b);
+}
+.okfw-facts dd {
+  margin: 0;
+}
+
+/* Eligibility */
+.okfw-people {
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+.okfw-people li {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-left: 4px solid var(--okfw-bad);
+  border-radius: 6px;
+}
+.okfw-people li[data-eligible='true'] {
+  border-left-color: var(--okfw-good);
+}
+.okfw-person-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px 12px;
+  align-items: center;
+}
+.okfw-person-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted, #64748b);
+}
+.okfw-verdict {
+  min-width: 9.5em;
+  text-align: right;
+  font-weight: 600;
+}
+.okfw-verdict .okfw-reason {
+  font-weight: 400;
+}
+.okfw-days {
+  display: inline-flex;
+  gap: 2px;
+}
+.okfw-days span {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--surface-2, #f1f5f9);
+  border: 1px solid var(--border, #e2e8f0);
+  font-size: 9.5px;
+  line-height: 14px;
+  text-align: center;
+  color: var(--text-muted, #64748b);
+}
+.okfw-days span[data-present='true'] {
+  background: var(--accent, #2563eb);
+  border-color: var(--accent, #2563eb);
+  color: #fff;
+}
+.okfw-result {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 8px;
+}
+.okfw-big {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--heading, #0f172a);
+}
+.okfw-big[data-over='true'] {
+  color: var(--okfw-bad);
+}
+
+/* Summary sandbox */
+.okfw-responses {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.okfw-responses li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.okfw-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.okfw-callers label {
+  display: block;
+  margin: 3px 0;
+}
+
+/* The web app's SummaryPanel, restyled with the viewer's tokens. */
+.okfw-panel .summary {
+  display: grid;
+  gap: 10px;
+}
+.okfw-panel .stat p {
+  margin: 0;
+}
+.okfw-panel .stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--heading, #0f172a);
+}
+.okfw-panel .muted {
+  color: var(--text-muted, #64748b);
+  margin: 0;
+}
+.okfw-panel .question-results {
+  margin: 0;
+  padding-left: 18px;
+}
+.okfw-panel .question-result {
+  margin-bottom: 8px;
+}
+.okfw-panel .question-result h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+.okfw-panel .question-result p {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+}
+.okfw-panel .bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--border, #e2e8f0);
+}
+.okfw-panel .bar-fill {
+  background: var(--accent, #2563eb);
+}
+.okfw-panel .bar-rest {
+  background: var(--border, #e2e8f0);
+}
+.okfw-panel .bar-no {
+  background: var(--okfw-bad);
+  opacity: 0.6;
+}
+
+.okfw-db {
+  margin-top: 12px;
+}
+@media (max-width: 520px) {
+  .okfw-person-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .okfw-verdict {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
+
+/* The viewer's .prose list rules indent and bullet lists; the widget lists are layouts. */
+.okfw .okfw-people,
+.okfw .okfw-responses {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* Sharing the transaction */
+.okfw-memory > section {
+  margin-top: 12px;
+}
+.okfw-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.okfw-tree li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-left: 3px solid var(--okfw-good);
+  border-radius: 4px;
+  background: var(--okfw-good-bg);
+}
+.okfw-tree li[data-scope='per-request'] {
+  border-left-color: var(--okfw-bad);
+  background: var(--okfw-bad-bg);
+}
+.okfw-tree strong {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+}
+.okfw-squares {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  vertical-align: middle;
+  max-width: 100%;
+}
+.okfw-squares span {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--okfw-good);
+}
+.okfw-squares span[data-kind='request'] {
+  background: var(--okfw-bad);
+}
+.okfw-squares span[data-kind='store'] {
+  background: var(--accent, #2563eb);
+}
+.okfw-pool {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.okfw-pool li {
+  padding: 6px 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 12.5px;
+  background: var(--surface-2, #f1f5f9);
+}
+.okfw-pool li span {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+}
+.okfw-pool li[data-busy='true'] {
+  border-color: var(--accent, #2563eb);
+}
+.okfw-pool li[data-stale='true'] {
+  border-color: var(--okfw-bad);
+  background: var(--okfw-bad-bg);
+}

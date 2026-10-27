@@ -1,0 +1,29 @@
+# Local PostgreSQL for development and tests. See okf/adr/0003-local-postgres-with-docker-compose.md.
+# Values come from .env (copy .env.example). The defaults are local development values, not secrets.
+name: pulse-survey
+
+services:
+  db:
+    image: postgres:18.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pulse}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pulse}
+      POSTGRES_DB: ${POSTGRES_DB:-pulse}
+    ports:
+      # Bound to localhost only, so the dev database is not reachable from the network.
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      # PostgreSQL 18 images keep data under /var/lib/postgresql/18/docker. Mount the parent,
+      # not /var/lib/postgresql/data as older images and most tutorials do.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 5s
+
+volumes:
+  pgdata:
