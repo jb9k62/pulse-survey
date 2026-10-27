@@ -10,6 +10,20 @@ lists the seeded users across both organisations and you become whichever one yo
 server-side session cookie. The picker is gated to development
 ([ADR-0002](okf/adr/0002-dev-sign-in-with-server-side-sessions.md)).
 
+## Screenshots
+
+A Manager reads their organisation's weekly summary:
+
+![Weekly summary for Acme weekly pulse: 50% completion, 2 of 4 members, with a bar per question](docs/screenshots/pulse-summary.png)
+
+A Member answers this week's three questions:
+
+![The Blue River weekly pulse form with a 1 to 5 rating, a yes/no question and a second rating](docs/screenshots/pulse-member-form.png)
+
+The development sign-in picker, listing the seeded users of both organisations:
+
+![Development sign-in with Managers and Members for Acme Manufacturing and Blue River Health](docs/screenshots/pulse-sign-in.png)
+
 ## Status
 
 The vertical slice is built: the PostgreSQL schema with row-level security, the NestJS API, the
